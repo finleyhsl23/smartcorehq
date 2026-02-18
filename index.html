@@ -2,375 +2,295 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>SmartCore HQ</title>
-
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="/assets/styles.css" />
+  <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+  <script defer src="/assets/app.js"></script>
 </head>
 
 <body>
-  <div class="bg-grid"></div>
-  <div class="glow"></div>
+  <div class="bg"></div>
+  <div class="noise"></div>
 
-  <div class="wrap">
-    <header class="topbar card">
-      <div class="brand">
-        <div class="logoMark" aria-hidden="true"></div>
+  <!-- Top Bar -->
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand" role="button" tabindex="0" id="brandHome">
+        <div class="logoDot"></div>
         <div class="brandText">
-          <div class="brandTitle">SmartCore HQ</div>
+          <div class="brandTitle">SMARTCORE HQ</div>
           <div class="brandSub">Internal Management System</div>
         </div>
       </div>
 
-      <div class="topActions">
-        <div class="pill" id="sessionPill" style="display:none;">
-          <div class="status">
-            <span class="dot ok" id="sessionDot"></span>
-            <span class="statusText" id="sessionText">Authenticated</span>
-          </div>
-          <button class="btn small linky" id="btnSignOut" type="button">Sign out</button>
+      <div class="topbar-right" id="topbarRight" hidden>
+        <div class="pill">
+          <span class="dot"></span>
+          <span id="userEmail" class="pillText">—</span>
         </div>
-      </div>
-    </header>
-
-    <main class="grid">
-      <!-- Main -->
-      <section class="card section">
-        <!-- LOGIN -->
-        <div class="view active" id="viewLogin">
-          <div class="titleRow">
-            <div>
-              <h2>Staff Login</h2>
-              <p>Restricted to SmartCore staff. You must exist in <span class="accent">smartcore_logins</span>.</p>
-            </div>
-            <div class="status" id="loginStatus" style="display:none;">
-              <span class="dot" id="loginDot"></span>
-              <span class="statusText" id="loginStatusText">Status</span>
-            </div>
-          </div>
-
-          <div class="hr"></div>
-
-          <div class="fields">
-            <div class="field">
-              <label for="email">Email</label>
-              <input id="email" type="email" autocomplete="email" inputmode="email"
-                     placeholder="name@smartcoretechnology.co.uk" />
-            </div>
-
-            <div class="field">
-              <label for="password">Password</label>
-              <input id="password" type="password" autocomplete="current-password"
-                     placeholder="••••••••" />
-            </div>
-
-            <div class="row between">
-              <div class="note" id="envHint">Loading environment…</div>
-              <button class="btn primary" id="btnLogin" type="button">Sign in</button>
-            </div>
-
-            <div class="footerNote">
-              If you can sign in but still get blocked, you haven’t been added to <b>smartcore_logins</b> (or role is wrong).
-            </div>
-          </div>
-        </div>
-
-        <!-- DASHBOARD -->
-        <div class="view" id="viewDashboard">
-          <div class="titleRow">
-            <div>
-              <h2>Dashboard</h2>
-              <p>Operations command centre. Choose a module to continue.</p>
-            </div>
-            <span class="status" id="roleBadge">
-              <span class="dot ok"></span>
-              <span class="statusText" id="roleText">role</span>
-            </span>
-          </div>
-
-          <div class="dashCards">
-            <button class="dashCard" data-go="calendar" type="button">
-              <div class="icon" aria-hidden="true" id="iconCalendar"></div>
-              <h3>Calendar</h3>
-              <p>Week / month views, event management, filters by customer and staff.</p>
-            </button>
-
-            <button class="dashCard" data-go="customers" type="button">
-              <div class="icon" aria-hidden="true" id="iconBuilding"></div>
-              <h3>Customer Portal Manager</h3>
-              <p>Companies, contacts, services, branding, notes and edits.</p>
-            </button>
-
-            <button class="dashCard" data-go="finance" type="button">
-              <div class="icon" aria-hidden="true" id="iconChart"></div>
-              <h3>Payments &amp; Finance</h3>
-              <p>Track income, expenses, receipts, and annual reporting views.</p>
-            </button>
-
-            <button class="dashCard" data-go="vault" id="vaultCard" type="button">
-              <div class="icon" aria-hidden="true" id="iconLock"></div>
-              <h3>Credentials Vault</h3>
-              <p>Admin-only secure store. PIN required (server-side verification).</p>
-            </button>
-          </div>
-
-          <div class="footerNote">
-            All routes are protected via session checks and RLS. Vault only appears for <b>admin</b>.
-          </div>
-        </div>
-
-        <!-- MODULE SHELLS -->
-       <div class="view" id="viewCalendar">
-  <div class="crumb">
-    <div class="left">
-      <div class="kicker">Module</div>
-      <div class="h">Calendar</div>
-    </div>
-    <button class="btn small linky" data-back type="button">Back</button>
-  </div>
-
-  <div class="card inner">
-    <div class="titleRow">
-      <div>
-        <h2>Events</h2>
-        <p>Month view now. Week view next.</p>
-      </div>
-      <div class="row">
-        <button class="btn small" id="btnCalMonth" type="button">Month</button>
-        <button class="btn small" id="btnCalWeek" type="button" disabled>Week (next)</button>
-        <button class="btn primary small" id="btnAddEvent" type="button">Add Event</button>
+        <button class="btn btn-ghost" id="btnSignOut">Sign out</button>
       </div>
     </div>
+  </header>
 
-    <div class="row" style="justify-content:space-between;">
-      <div class="row">
-        <button class="btn small linky" id="btnPrevMonth" type="button">←</button>
-        <div class="kicker" id="calLabel">Month</div>
-        <button class="btn small linky" id="btnNextMonth" type="button">→</button>
-      </div>
+  <!-- App Container -->
+  <main class="container">
 
-      <div class="row">
-        <select id="calFilterCompany" class="btn small"></select>
-        <select id="calFilterStaff" class="btn small"></select>
-      </div>
-    </div>
-
-    <div class="hr"></div>
-    <div id="calendarGrid" class="calendar"></div>
-  </div>
-</div>
-
-
-        <div class="view" id="viewCustomers">
-  <div class="crumb">
-    <div class="left">
-      <div class="kicker">Module</div>
-      <div class="h">Customer Portal Manager</div>
-    </div>
-    <button class="btn small linky" data-back type="button">Back</button>
-  </div>
-
-  <div class="moduleGrid">
-    <div class="card inner">
-      <div class="titleRow">
-        <div>
-          <h2>Companies</h2>
-          <p>Add and manage SmartCore customers.</p>
-        </div>
-        <button class="btn primary small" id="btnAddCompany" type="button">Add Company</button>
-      </div>
-
-      <div class="field">
-        <label>Search</label>
-        <input id="companySearch" type="text" placeholder="Search company name..." />
-      </div>
-
-      <div class="list" id="companyList"></div>
-    </div>
-
-    <div class="card inner">
-      <div class="titleRow">
-        <div>
-          <h2>Company Details</h2>
-          <p id="companyDetailsHint">Select a company to view/edit.</p>
-        </div>
-        <div class="row">
-          <button class="btn small" id="btnSaveCompany" type="button" disabled>Save</button>
-          <button class="btn small" id="btnDeleteCompany" type="button" disabled>Delete</button>
-        </div>
-      </div>
-
-      <div id="companyFormWrap" class="empty">No company selected.</div>
-    </div>
-
-    <div class="card inner">
-      <div class="titleRow">
-        <div>
-          <h2>Services</h2>
-          <p>Add services for the selected company.</p>
-        </div>
-        <button class="btn primary small" id="btnAddService" type="button" disabled>Add Service</button>
-      </div>
-
-      <div class="list" id="serviceList"></div>
-    </div>
-  </div>
-</div>
-
-
-       <div class="view" id="viewFinance">
-  <div class="crumb">
-    <div class="left">
-      <div class="kicker">Module</div>
-      <div class="h">Payments &amp; Finance</div>
-    </div>
-    <button class="btn small linky" data-back type="button">Back</button>
-  </div>
-
-  <div class="moduleGrid">
-    <div class="card inner">
-      <div class="titleRow">
-        <div>
-          <h2>Transactions</h2>
-          <p>Add incoming/outgoing. Company optional for global expense.</p>
-        </div>
-        <button class="btn primary small" id="btnAddTxn" type="button">Add</button>
-      </div>
-
-      <div class="row">
-        <select id="txnCompanyFilter" class="btn small"></select>
-        <select id="txnYear" class="btn small"></select>
-      </div>
-
-      <div class="list" id="txnList"></div>
-    </div>
-
-    <div class="card inner">
-      <div class="titleRow">
-        <div>
-          <h2>Financial Dashboard</h2>
-          <p>Income / Expenses / Profit by month.</p>
-        </div>
-      </div>
-
-      <canvas id="chartIncome" height="140"></canvas>
-      <div class="hr"></div>
-      <canvas id="chartExpense" height="140"></canvas>
-      <div class="hr"></div>
-      <canvas id="chartProfit" height="140"></canvas>
-
-      <div class="hr"></div>
-      <div class="row between">
-        <div class="note" id="yearSummary">Annual summary: £0</div>
-        <button class="btn small" id="btnExportCsv" type="button">Export CSV</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-        <div class="view" id="viewVault">
-  <div class="crumb">
-    <div class="left">
-      <div class="kicker">Admin Module</div>
-      <div class="h">Credentials Vault</div>
-    </div>
-    <button class="btn small linky" data-back type="button">Back</button>
-  </div>
-
-  <div class="card inner">
-    <div class="titleRow">
-      <div>
-        <h2>Vault</h2>
-        <p>Unlock required. Secrets never auto-display.</p>
-      </div>
-      <div class="row">
-        <button class="btn primary small" id="btnOpenVaultUnlock" type="button">Enter PIN</button>
-        <button class="btn small" id="btnAddVaultItem" type="button" disabled>Add Item</button>
-      </div>
-    </div>
-
-    <div class="list" id="vaultList"></div>
-  </div>
-</div>
-
-
-          <div class="empty">
-            PIN unlock is verified server-side via <b>/vault/verify</b> (Cloudflare Function).<br><br>
-            Next: vault list + reveal-confirm + copy buttons + audit logs.
-          </div>
-
-          <div class="hr"></div>
-
-          <div class="row">
-            <button class="btn primary" id="btnOpenVaultUnlock" type="button">Enter PIN to Unlock</button>
-          </div>
-        </div>
-      </section>
-
-      <!-- Status panel -->
-      <aside class="card section">
-        <div class="titleRow">
+    <!-- LOGIN VIEW -->
+    <section class="view" id="viewLogin">
+      <div class="panel panel-lg">
+        <div class="panelHead">
           <div>
-            <h2>System Status</h2>
-            <p>Connection + access checks.</p>
+            <h1 class="h1">Staff Login</h1>
+            <p class="muted">Restricted to SmartCore staff. You must exist in <span class="mono">smartcore_logins</span>.</p>
           </div>
         </div>
 
-        <div class="hr"></div>
-
-        <div class="fields">
-          <div class="status">
-            <span class="dot" id="sbDot"></span>
-            <span class="statusText" id="sbText">Supabase: loading</span>
+        <form id="loginForm" class="form">
+          <div class="field">
+            <label>Email</label>
+            <input type="email" id="loginEmail" placeholder="name@smartcoretechnology.co.uk" autocomplete="username" required />
+          </div>
+          <div class="field">
+            <label>Password</label>
+            <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password" required />
           </div>
 
-          <div class="status">
-            <span class="dot" id="authDot"></span>
-            <span class="statusText" id="authText">Auth: unknown</span>
+          <div class="row row-gap">
+            <button class="btn btn-primary" type="submit" id="btnLogin">
+              <span class="btnLabel">Sign in</span>
+              <span class="btnSpinner" hidden></span>
+            </button>
+            <div class="hint" id="loginHint"> </div>
           </div>
-
-          <div class="status">
-            <span class="dot" id="accessDot"></span>
-            <span class="statusText" id="accessText">Access: not checked</span>
-          </div>
-
-          <div class="hr"></div>
-
-          <div class="note">
-            Uses Cloudflare Pages Function <b>/config</b> to load:
-            <br>• SUPABASE_URL
-            <br>• SUPABASE_ANON
-          </div>
-        </div>
-
-        <div class="footerNote">Security is enforced by Supabase RLS. Frontend is UI only.</div>
-      </aside>
-    </main>
-  </div>
-
-  <!-- Modal -->
-  <div class="modalWrap" id="modalWrap" aria-hidden="true">
-    <div class="modal" role="dialog" aria-modal="true">
-      <div class="modalHeader">
-        <div>
-          <h3 id="modalTitle">Modal</h3>
-          <p id="modalDesc">Description</p>
-        </div>
-        <button class="btn small linky" id="modalClose" type="button">Close</button>
+        </form>
       </div>
-      <div id="modalBody"></div>
-      <div class="modalActions" id="modalActions"></div>
+    </section>
+
+    <!-- DASHBOARD VIEW -->
+    <section class="view" id="viewDashboard" hidden>
+      <div class="panel panel-lg">
+        <div class="panelHead">
+          <div>
+            <h1 class="h1">Dashboard</h1>
+            <p class="muted">Operations command centre. Choose a module to continue.</p>
+          </div>
+        </div>
+
+        <div class="grid">
+          <button class="card" data-nav="customers">
+            <div class="cardIcon">🏢</div>
+            <div class="cardText">
+              <div class="cardTitle">Customer Portal Manager</div>
+              <div class="cardDesc">Full customer list, view / edit details, manage services.</div>
+            </div>
+          </button>
+
+          <button class="card" data-nav="calendar">
+            <div class="cardIcon">📅</div>
+            <div class="cardText">
+              <div class="cardTitle">Calendar</div>
+              <div class="cardDesc">Google Calendar embedded with reminders & notifications.</div>
+            </div>
+          </button>
+
+          <button class="card" data-nav="finance">
+            <div class="cardIcon">💳</div>
+            <div class="cardText">
+              <div class="cardTitle">Payments & Finance</div>
+              <div class="cardDesc">Track incoming/outgoing transactions and export CSV.</div>
+            </div>
+          </button>
+
+          <button class="card" data-nav="vault" id="vaultCard">
+            <div class="cardIcon">🔐</div>
+            <div class="cardText">
+              <div class="cardTitle">Credentials Vault</div>
+              <div class="cardDesc">Admin-only. PIN verified server-side. Audit logged.</div>
+            </div>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- CUSTOMERS VIEW -->
+    <section class="view" id="viewCustomers" hidden>
+      <div class="panel panel-xl">
+        <div class="panelHead panelHeadRow">
+          <div>
+            <div class="crumb">MODULE</div>
+            <h1 class="h1">Customer Portal Manager</h1>
+            <p class="muted">Full list of all customers. Tap View for details or Edit to update.</p>
+          </div>
+          <div class="panelActions">
+            <button class="btn btn-ghost" data-back>Back</button>
+            <button class="btn btn-primary" id="btnAddCompany">+ Add New Company</button>
+          </div>
+        </div>
+
+        <div class="toolbar">
+          <input class="search" id="companySearch" placeholder="Search customers..." />
+          <div class="spacer"></div>
+          <div class="pill pill-soft" id="companyCount">0 customers</div>
+        </div>
+
+        <div class="tableWrap" id="companiesWrap">
+          <table class="table" id="companiesTable" aria-label="Companies">
+            <thead>
+              <tr>
+                <th>Company</th>
+                <th>Primary Contact</th>
+                <th>Email</th>
+                <th class="hide-sm">Phone</th>
+                <th class="col-actions">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="companiesBody"></tbody>
+          </table>
+
+          <!-- Mobile card list -->
+          <div class="mobileList" id="companiesMobile" hidden></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CALENDAR VIEW -->
+    <section class="view" id="viewCalendar" hidden>
+      <div class="panel panel-xl">
+        <div class="panelHead panelHeadRow">
+          <div>
+            <div class="crumb">MODULE</div>
+            <h1 class="h1">Calendar</h1>
+            <p class="muted">Google Calendar embedded. Works perfectly on iPhone with reminders.</p>
+          </div>
+          <div class="panelActions">
+            <button class="btn btn-ghost" data-back>Back</button>
+          </div>
+        </div>
+
+        <div class="calendarFrame">
+          <iframe
+            title="SmartCore Calendar"
+            src="https://calendar.google.com/calendar/embed?src=eb365a441e6c640409796e9a1a78ddac734d5e9d30cb07bf165085ffc296f8b7%40group.calendar.google.com&ctz=Europe%2FLondon"
+            frameborder="0"
+            scrolling="no">
+          </iframe>
+        </div>
+      </div>
+    </section>
+
+    <!-- FINANCE VIEW -->
+    <section class="view" id="viewFinance" hidden>
+      <div class="panel panel-xl">
+        <div class="panelHead panelHeadRow">
+          <div>
+            <div class="crumb">MODULE</div>
+            <h1 class="h1">Payments & Finance</h1>
+            <p class="muted">Track incoming & outgoing. No PIN here — vault only.</p>
+          </div>
+          <div class="panelActions">
+            <button class="btn btn-ghost" data-back>Back</button>
+            <button class="btn btn-primary" id="btnAddTxn">+ Add Transaction</button>
+          </div>
+        </div>
+
+        <div class="toolbar">
+          <select id="financeYear" class="select"></select>
+          <select id="financeType" class="select">
+            <option value="all">All</option>
+            <option value="incoming">Incoming</option>
+            <option value="outgoing">Outgoing</option>
+          </select>
+          <select id="financeCompany" class="select">
+            <option value="all">All companies</option>
+          </select>
+          <div class="spacer"></div>
+          <button class="btn btn-ghost" id="btnExportCsv">Export CSV</button>
+        </div>
+
+        <div class="financeGrid">
+          <div class="panel panel-inner">
+            <div class="panelTitleRow">
+              <div class="panelTitle">Monthly Summary</div>
+              <div class="muted small" id="financeSummary">—</div>
+            </div>
+            <div class="chartWrap">
+              <canvas id="financeChart" height="120"></canvas>
+            </div>
+            <div class="miniStats">
+              <div class="stat">
+                <div class="statLabel">Income</div>
+                <div class="statValue" id="statIncome">£0</div>
+              </div>
+              <div class="stat">
+                <div class="statLabel">Expenses</div>
+                <div class="statValue" id="statExpense">£0</div>
+              </div>
+              <div class="stat">
+                <div class="statLabel">Profit</div>
+                <div class="statValue" id="statProfit">£0</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel panel-inner">
+            <div class="panelTitleRow">
+              <div class="panelTitle">Transactions</div>
+              <div class="muted small" id="txnCount">0</div>
+            </div>
+            <div class="txnList" id="txnList"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VAULT VIEW -->
+    <section class="view" id="viewVault" hidden>
+      <div class="panel panel-xl">
+        <div class="panelHead panelHeadRow">
+          <div>
+            <div class="crumb">ADMIN MODULE</div>
+            <h1 class="h1">Credentials Vault</h1>
+            <p class="muted">PIN verified server-side. Attempts logged. Session expires after 20 minutes.</p>
+          </div>
+          <div class="panelActions">
+            <button class="btn btn-ghost" data-back>Back</button>
+          </div>
+        </div>
+
+        <div class="vaultTop">
+          <div class="pill pill-soft">
+            <span class="dot"></span>
+            <span id="vaultStatus" class="pillText">Locked</span>
+          </div>
+          <div class="spacer"></div>
+          <button class="btn btn-primary" id="btnVaultUnlock">Enter PIN</button>
+          <button class="btn btn-ghost" id="btnVaultAdd" disabled>Add Item</button>
+        </div>
+
+        <div class="vaultList" id="vaultList"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAL -->
+  <div class="modal" id="modal" hidden>
+    <div class="modalBackdrop" data-close></div>
+    <div class="modalCard" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modalHead">
+        <div class="modalTitle" id="modalTitle">—</div>
+        <button class="btn btn-ghost btn-icon" data-close aria-label="Close">✕</button>
+      </div>
+      <div class="modalBody" id="modalBody"></div>
+      <div class="modalFoot" id="modalFoot"></div>
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="/assets/icons.js"></script>
-  <script src="/assets/app.js"></script>
 </body>
 </html>
-
