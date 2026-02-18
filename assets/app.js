@@ -270,3 +270,8 @@ function wireUI(){
     await enforceAccess(session);
   });
 })();
+
+window.SC = {
+  get sb(){ return sb; },
+  get profile(){ return currentProfile; }
+};
