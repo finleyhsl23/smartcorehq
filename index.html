@@ -124,47 +124,180 @@
         </div>
 
         <!-- MODULE SHELLS -->
-        <div class="view" id="viewCalendar">
-          <div class="crumb">
-            <div class="left">
-              <div class="kicker">Module</div>
-              <div class="h">Calendar</div>
-            </div>
-            <button class="btn small linky" data-back type="button">Back</button>
-          </div>
-          <div class="empty">Next: week/month calendar + add/edit events + filters + ICS export.</div>
-        </div>
+       <div class="view" id="viewCalendar">
+  <div class="crumb">
+    <div class="left">
+      <div class="kicker">Module</div>
+      <div class="h">Calendar</div>
+    </div>
+    <button class="btn small linky" data-back type="button">Back</button>
+  </div>
+
+  <div class="card inner">
+    <div class="titleRow">
+      <div>
+        <h2>Events</h2>
+        <p>Month view now. Week view next.</p>
+      </div>
+      <div class="row">
+        <button class="btn small" id="btnCalMonth" type="button">Month</button>
+        <button class="btn small" id="btnCalWeek" type="button" disabled>Week (next)</button>
+        <button class="btn primary small" id="btnAddEvent" type="button">Add Event</button>
+      </div>
+    </div>
+
+    <div class="row" style="justify-content:space-between;">
+      <div class="row">
+        <button class="btn small linky" id="btnPrevMonth" type="button">←</button>
+        <div class="kicker" id="calLabel">Month</div>
+        <button class="btn small linky" id="btnNextMonth" type="button">→</button>
+      </div>
+
+      <div class="row">
+        <select id="calFilterCompany" class="btn small"></select>
+        <select id="calFilterStaff" class="btn small"></select>
+      </div>
+    </div>
+
+    <div class="hr"></div>
+    <div id="calendarGrid" class="calendar"></div>
+  </div>
+</div>
+
 
         <div class="view" id="viewCustomers">
-          <div class="crumb">
-            <div class="left">
-              <div class="kicker">Module</div>
-              <div class="h">Customer Portal Manager</div>
-            </div>
-            <button class="btn small linky" data-back type="button">Back</button>
-          </div>
-          <div class="empty">Next: company list + add/edit form + logo upload + services editor.</div>
-        </div>
+  <div class="crumb">
+    <div class="left">
+      <div class="kicker">Module</div>
+      <div class="h">Customer Portal Manager</div>
+    </div>
+    <button class="btn small linky" data-back type="button">Back</button>
+  </div>
 
-        <div class="view" id="viewFinance">
-          <div class="crumb">
-            <div class="left">
-              <div class="kicker">Module</div>
-              <div class="h">Payments &amp; Finance</div>
-            </div>
-            <button class="btn small linky" data-back type="button">Back</button>
-          </div>
-          <div class="empty">Next: transactions CRUD + receipt upload + charts + year selector.</div>
+  <div class="moduleGrid">
+    <div class="card inner">
+      <div class="titleRow">
+        <div>
+          <h2>Companies</h2>
+          <p>Add and manage SmartCore customers.</p>
         </div>
+        <button class="btn primary small" id="btnAddCompany" type="button">Add Company</button>
+      </div>
+
+      <div class="field">
+        <label>Search</label>
+        <input id="companySearch" type="text" placeholder="Search company name..." />
+      </div>
+
+      <div class="list" id="companyList"></div>
+    </div>
+
+    <div class="card inner">
+      <div class="titleRow">
+        <div>
+          <h2>Company Details</h2>
+          <p id="companyDetailsHint">Select a company to view/edit.</p>
+        </div>
+        <div class="row">
+          <button class="btn small" id="btnSaveCompany" type="button" disabled>Save</button>
+          <button class="btn small" id="btnDeleteCompany" type="button" disabled>Delete</button>
+        </div>
+      </div>
+
+      <div id="companyFormWrap" class="empty">No company selected.</div>
+    </div>
+
+    <div class="card inner">
+      <div class="titleRow">
+        <div>
+          <h2>Services</h2>
+          <p>Add services for the selected company.</p>
+        </div>
+        <button class="btn primary small" id="btnAddService" type="button" disabled>Add Service</button>
+      </div>
+
+      <div class="list" id="serviceList"></div>
+    </div>
+  </div>
+</div>
+
+
+       <div class="view" id="viewFinance">
+  <div class="crumb">
+    <div class="left">
+      <div class="kicker">Module</div>
+      <div class="h">Payments &amp; Finance</div>
+    </div>
+    <button class="btn small linky" data-back type="button">Back</button>
+  </div>
+
+  <div class="moduleGrid">
+    <div class="card inner">
+      <div class="titleRow">
+        <div>
+          <h2>Transactions</h2>
+          <p>Add incoming/outgoing. Company optional for global expense.</p>
+        </div>
+        <button class="btn primary small" id="btnAddTxn" type="button">Add</button>
+      </div>
+
+      <div class="row">
+        <select id="txnCompanyFilter" class="btn small"></select>
+        <select id="txnYear" class="btn small"></select>
+      </div>
+
+      <div class="list" id="txnList"></div>
+    </div>
+
+    <div class="card inner">
+      <div class="titleRow">
+        <div>
+          <h2>Financial Dashboard</h2>
+          <p>Income / Expenses / Profit by month.</p>
+        </div>
+      </div>
+
+      <canvas id="chartIncome" height="140"></canvas>
+      <div class="hr"></div>
+      <canvas id="chartExpense" height="140"></canvas>
+      <div class="hr"></div>
+      <canvas id="chartProfit" height="140"></canvas>
+
+      <div class="hr"></div>
+      <div class="row between">
+        <div class="note" id="yearSummary">Annual summary: £0</div>
+        <button class="btn small" id="btnExportCsv" type="button">Export CSV</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 
         <div class="view" id="viewVault">
-          <div class="crumb">
-            <div class="left">
-              <div class="kicker">Admin Module</div>
-              <div class="h">Credentials Vault</div>
-            </div>
-            <button class="btn small linky" data-back type="button">Back</button>
-          </div>
+  <div class="crumb">
+    <div class="left">
+      <div class="kicker">Admin Module</div>
+      <div class="h">Credentials Vault</div>
+    </div>
+    <button class="btn small linky" data-back type="button">Back</button>
+  </div>
+
+  <div class="card inner">
+    <div class="titleRow">
+      <div>
+        <h2>Vault</h2>
+        <p>Unlock required. Secrets never auto-display.</p>
+      </div>
+      <div class="row">
+        <button class="btn primary small" id="btnOpenVaultUnlock" type="button">Enter PIN</button>
+        <button class="btn small" id="btnAddVaultItem" type="button" disabled>Add Item</button>
+      </div>
+    </div>
+
+    <div class="list" id="vaultList"></div>
+  </div>
+</div>
+
 
           <div class="empty">
             PIN unlock is verified server-side via <b>/vault/verify</b> (Cloudflare Function).<br><br>
@@ -240,3 +373,4 @@
   <script src="/assets/app.js"></script>
 </body>
 </html>
+
