@@ -2,16 +2,6 @@
 
 const $ = (id) => document.getElementById(id);
 
-function withTimeout(promise, ms, label="Request"){
-  return Promise.race([
-    promise,
-    new Promise((_, rej) =>
-      setTimeout(() => rej(new Error(`${label} timed out after ${ms/1000}s`)), ms)
-    )
-  ]);
-}
-
-
 const views = {
   login: $("viewLogin"),
   dash: $("viewDashboard"),
@@ -21,20 +11,32 @@ const views = {
   vault: $("viewVault")
 };
 
+function withTimeout(promise, ms, label="Request"){
+  return Promise.race([
+    promise,
+    new Promise((_, rej) =>
+      setTimeout(() => rej(new Error(`${label} timed out after ${Math.round(ms/1000)}s`)), ms)
+    )
+  ]);
+}
+
 function setDot(dotEl, ok){
   dotEl.classList.remove("ok","bad");
   dotEl.classList.add(ok ? "ok" : "bad");
 }
+
 function setStatus(dotId, textId, ok, text){
   setDot($(dotId), ok);
   $(textId).textContent = text;
 }
+
 function toastLogin(ok, msg){
   const box = $("loginStatus");
   box.style.display = "inline-flex";
   setDot($("loginDot"), ok);
   $("loginStatusText").textContent = msg;
 }
+
 function showView(name){
   Object.values(views).forEach(v => v.classList.remove("active"));
   views[name].classList.add("active");
@@ -44,9 +46,11 @@ function showView(name){
 let sb = null;
 let currentProfile = null;
 
+// Prevent overlapping access checks (auth events can fire during sign-in)
+let enforcing = false;
+
 window.addEventListener("unhandledrejection", (e) => {
   console.error("Unhandled promise rejection:", e.reason);
-  toastLogin(false, "Error: check console (unhandled rejection).");
 });
 window.addEventListener("error", (e) => {
   console.error("Window error:", e.error || e.message);
@@ -64,12 +68,19 @@ async function initSupabase(){
   try{
     const cfg = await loadConfig();
 
-    if(!cfg?.SUPABASE_URL || !cfg?.SUPABASE_ANON){
-      throw new Error("Missing SUPABASE_URL or SUPABASE_ANON in /config response");
-    }
+    const url = cfg?.SUPABASE_URL;
+    const anon = cfg?.SUPABASE_ANON;
 
-    sb = window.supabase.createClient(cfg.SUPABASE_URL, cfg.SUPABASE_ANON, {
-      auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+    if(!url || !anon) throw new Error("Missing SUPABASE_URL or SUPABASE_ANON from /config");
+
+    // Explicit storage helps with “session not available / delayed” cases
+    sb = window.supabase.createClient(url, anon, {
+      auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: true,
+        storage: window.localStorage
+      }
     });
 
     $("envHint").textContent = "Environment loaded.";
@@ -86,17 +97,11 @@ async function initSupabase(){
   }
 }
 
-async function getSession(){
-  const { data, error } = await sb.auth.getSession();
-  if(error) throw error;
-  return data.session || null;
-}
-
 async function fetchSmartcoreProfileByEmail(email){
   const { data, error } = await sb
     .from("smartcore_logins")
     .select("id,email,role,created_at")
-    .ilike("email", email) // case-insensitive
+    .ilike("email", email)
     .maybeSingle();
 
   if(error){
@@ -106,10 +111,12 @@ async function fetchSmartcoreProfileByEmail(email){
   return data || null;
 }
 
+async function enforceAccess(session){
+  // Prevent overlaps
+  if(enforcing) return;
+  enforcing = true;
 
-async function enforceAccess(passedSession=null){
   try{
-    const session = passedSession ?? await withTimeout(getSession(), 10000, "Get session");
     if(!session){
       currentProfile = null;
       $("sessionPill").style.display = "none";
@@ -130,19 +137,12 @@ async function enforceAccess(passedSession=null){
       return;
     }
 
-    // ✅ Force a hard timeout + log the exact response if it fails
-    let profile = null;
-    try{
-      profile = await withTimeout(fetchSmartcoreProfileByEmail(email), 10000, "Access check (smartcore_logins)");
-    }catch(err){
-      console.error("smartcore_logins fetch error:", err);
-      toastLogin(false, "Access check failed (smartcore_logins). Check console.");
-      setStatus("accessDot","accessText", false, "Access: error (see console)");
-      // sign out so it doesn't stick half-signed-in
-      try{ await sb.auth.signOut(); }catch{}
-      showView("login");
-      return;
-    }
+    // Hard timeout here prevents “stuck on signing in”
+    const profile = await withTimeout(
+      fetchSmartcoreProfileByEmail(email),
+      8000,
+      "Access check (smartcore_logins)"
+    );
 
     if(!profile){
       await sb.auth.signOut();
@@ -160,35 +160,36 @@ async function enforceAccess(passedSession=null){
     setDot($("sessionDot"), true);
 
     setStatus("accessDot","accessText", true, `Access: granted (${profile.role})`);
-
     $("roleText").textContent = (profile.role === "admin") ? "admin access" : "staff access";
     $("vaultCard").style.display = (profile.role === "admin") ? "block" : "none";
 
     showView("dash");
   }catch(e){
     console.error("Access enforcement error:", e);
-    toastLogin(false, `Access check failed: ${e.message}`);
+    toastLogin(false, e.message || "Access check failed");
     setStatus("accessDot","accessText", false, "Access: error (see console)");
     try{ await sb.auth.signOut(); }catch{}
     showView("login");
+  }finally{
+    enforcing = false;
   }
 }
 
-
 async function signIn(email, password){
-  const btn = document.getElementById("btnLogin");
+  const btn = $("btnLogin");
   try{
     toastLogin(true, "Signing in…");
     btn.disabled = true;
 
+    // Use returned session, do not call getSession right after login
     const { data, error } = await withTimeout(
       sb.auth.signInWithPassword({ email, password }),
       12000,
       "Supabase sign-in"
     );
+
     if(error) throw error;
 
-    // ✅ Use returned session immediately
     const session = data?.session;
     if(!session) throw new Error("Signed in but no session returned");
 
@@ -201,9 +202,8 @@ async function signIn(email, password){
   }
 }
 
-
 async function signOut(){
-  await sb.auth.signOut();
+  try{ await sb.auth.signOut(); } catch {}
   currentProfile = null;
   $("sessionPill").style.display = "none";
   setStatus("authDot","authText", false, "Auth: signed out");
@@ -256,9 +256,17 @@ function wireUI(){
   const ok = await initSupabase();
   if(!ok) return;
 
-  sb.auth.onAuthStateChange(async () => {
-    await enforceAccess();
-  });
+  // On initial load, check if there is already a session (this one is safe to call)
+  try{
+    const { data } = await sb.auth.getSession();
+    if(data?.session) await enforceAccess(data.session);
+    else showView("login");
+  }catch{
+    showView("login");
+  }
 
-  await enforceAccess();
+  // Keep in sync for future changes, but avoid overlaps via "enforcing"
+  sb.auth.onAuthStateChange(async (_event, session) => {
+    await enforceAccess(session);
+  });
 })();
