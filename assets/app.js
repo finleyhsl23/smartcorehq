@@ -151,18 +151,34 @@ async function enforceAccess(){
 }
 
 async function signIn(email, password){
+  const btn = document.getElementById("btnLogin");
+  const withTimeout = (p, ms) =>
+    Promise.race([
+      p,
+      new Promise((_, rej) => setTimeout(() => rej(new Error("Sign-in timed out. Check VPN/adblock or network.")), ms))
+    ]);
+
   try{
     toastLogin(true, "Signing in…");
-    const { data, error } = await sb.auth.signInWithPassword({ email, password });
+    btn.disabled = true;
+
+    const { data, error } = await withTimeout(
+      sb.auth.signInWithPassword({ email, password }),
+      12000
+    );
+
     if(error) throw error;
 
-    console.log("Signed in user:", data?.user?.email);
+    console.log("Signed in:", data?.user?.email);
     await enforceAccess();
   }catch(e){
-    console.error("Sign-in error:", e);
-    toastLogin(false, e.message);
+    console.error("Sign-in failed:", e);
+    toastLogin(false, e.message || "Sign-in failed");
+  }finally{
+    btn.disabled = false;
   }
 }
+
 
 async function signOut(){
   await sb.auth.signOut();
