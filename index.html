@@ -1,444 +1,15 @@
-<!-- index.html — SmartCore HQ (Cloudflare Pages) -->
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>SmartCore HQ</title>
 
-  <!-- Inter (clean + corporate) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <style>
-    :root{
-      --bg0:#050912;
-      --bg1:#071635;
-      --panel: rgba(255,255,255,.06);
-      --panel2: rgba(255,255,255,.08);
-      --border: rgba(255,255,255,.14);
-      --text: rgba(255,255,255,.92);
-      --muted: rgba(255,255,255,.68);
-      --muted2: rgba(255,255,255,.55);
-      --accent:#3B82F6;
-      --accent2:#60A5FA;
-      --danger:#EF4444;
-      --ok:#22C55E;
-      --shadow: 0 18px 50px rgba(0,0,0,.45);
-      --radius: 18px;
-      --radius2: 14px;
-      --blur: 16px;
-      --max: 1200px;
-    }
-
-    *{ box-sizing:border-box; }
-    html,body{ height:100%; }
-    body{
-      margin:0;
-      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
-      color:var(--text);
-      background:
-        radial-gradient(1200px 700px at 20% 20%, rgba(59,130,246,.18), transparent 60%),
-        radial-gradient(900px 600px at 80% 10%, rgba(96,165,250,.14), transparent 55%),
-        linear-gradient(160deg, var(--bg0), var(--bg1));
-      overflow-x:hidden;
-    }
-
-    .bg-grid{
-      position:fixed; inset:0;
-      background-image:
-        linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px);
-      background-size: 42px 42px;
-      mask-image: radial-gradient(circle at 30% 10%, black 0%, transparent 60%);
-      pointer-events:none;
-      opacity:.35;
-    }
-
-    .glow{
-      position:fixed; inset:-200px;
-      background: radial-gradient(700px 420px at 65% 30%, rgba(59,130,246,.18), transparent 60%);
-      filter: blur(18px);
-      pointer-events:none;
-      opacity:.6;
-      animation: floatGlow 10s ease-in-out infinite;
-    }
-    @keyframes floatGlow{
-      0%,100%{ transform: translate3d(0,0,0); }
-      50%{ transform: translate3d(-24px, 18px, 0); }
-    }
-
-    .wrap{
-      max-width: var(--max);
-      margin: 0 auto;
-      padding: 28px 18px 60px;
-      position:relative;
-    }
-
-    .topbar{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      margin-bottom: 18px;
-      animation: fadeUp .55s ease both;
-    }
-
-    .brand{
-      display:flex; align-items:center; gap:12px;
-      user-select:none;
-    }
-    .logoMark{
-      width:40px; height:40px;
-      border-radius: 14px;
-      background:
-        radial-gradient(12px 12px at 30% 30%, rgba(255,255,255,.25), transparent 60%),
-        linear-gradient(135deg, rgba(59,130,246,.95), rgba(96,165,250,.55));
-      box-shadow: 0 10px 28px rgba(59,130,246,.22);
-      border: 1px solid rgba(255,255,255,.18);
-    }
-    .brand h1{
-      font-size: 15px;
-      letter-spacing:.08em;
-      margin:0;
-      text-transform: uppercase;
-      font-weight: 700;
-    }
-    .brand .sub{
-      font-size:12px;
-      color:var(--muted);
-      margin-top:2px;
-      letter-spacing:.02em;
-      font-weight:500;
-    }
-
-    .pill{
-      display:flex; align-items:center; gap:10px;
-      padding: 10px 12px;
-      border-radius: 999px;
-      background: var(--panel);
-      border: 1px solid var(--border);
-      backdrop-filter: blur(var(--blur));
-      -webkit-backdrop-filter: blur(var(--blur));
-      box-shadow: 0 8px 26px rgba(0,0,0,.20);
-    }
-
-    .btn{
-      appearance:none;
-      border:1px solid rgba(255,255,255,.16);
-      background: rgba(255,255,255,.06);
-      color: var(--text);
-      padding: 10px 12px;
-      border-radius: 12px;
-      cursor:pointer;
-      transition: transform .18s ease, background .18s ease, border-color .18s ease, box-shadow .18s ease;
-      font-weight:600;
-      letter-spacing:.01em;
-    }
-    .btn:hover{
-      transform: translateY(-1px);
-      border-color: rgba(59,130,246,.55);
-      box-shadow: 0 10px 24px rgba(0,0,0,.28);
-      background: rgba(255,255,255,.08);
-    }
-    .btn.primary{
-      border-color: rgba(59,130,246,.55);
-      background: linear-gradient(135deg, rgba(59,130,246,.95), rgba(59,130,246,.55));
-      box-shadow: 0 14px 34px rgba(59,130,246,.20);
-    }
-    .btn.primary:hover{
-      border-color: rgba(96,165,250,.70);
-      box-shadow: 0 18px 44px rgba(59,130,246,.24);
-    }
-    .btn.danger{
-      border-color: rgba(239,68,68,.45);
-      background: rgba(239,68,68,.12);
-    }
-    .btn.danger:hover{
-      border-color: rgba(239,68,68,.75);
-    }
-    .btn.small{ padding:8px 10px; border-radius: 10px; font-size: 13px; }
-    .btn.linky{
-      border-color: transparent;
-      background: transparent;
-      padding: 8px 10px;
-      color: var(--muted);
-    }
-    .btn.linky:hover{
-      background: rgba(255,255,255,.06);
-      border-color: rgba(255,255,255,.10);
-      color: var(--text);
-      transform:none;
-      box-shadow:none;
-    }
-
-    .card{
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      backdrop-filter: blur(var(--blur));
-      -webkit-backdrop-filter: blur(var(--blur));
-      box-shadow: var(--shadow);
-    }
-
-    .grid{
-      display:grid;
-      grid-template-columns: 1.1fr .9fr;
-      gap: 16px;
-      align-items:start;
-      animation: fadeUp .65s ease .05s both;
-    }
-    @media (max-width: 980px){
-      .grid{ grid-template-columns: 1fr; }
-    }
-
-    @keyframes fadeUp{
-      from{ opacity:0; transform: translateY(10px); }
-      to{ opacity:1; transform: translateY(0); }
-    }
-
-    .section{
-      padding: 18px;
-    }
-
-    .titleRow{
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:12px;
-      margin-bottom: 12px;
-    }
-    .titleRow h2{
-      margin:0;
-      font-size: 16px;
-      letter-spacing:.02em;
-      font-weight:700;
-    }
-    .titleRow p{
-      margin: 6px 0 0;
-      font-size: 13px;
-      color: var(--muted);
-      line-height: 1.4;
-      max-width: 60ch;
-    }
-
-    .hr{
-      height:1px;
-      background: rgba(255,255,255,.10);
-      margin: 14px 0;
-    }
-
-    .fields{
-      display:grid;
-      gap: 10px;
-      margin-top: 12px;
-    }
-
-    .field label{
-      display:block;
-      font-size: 12px;
-      color: var(--muted);
-      margin-bottom: 6px;
-      letter-spacing: .02em;
-      font-weight: 600;
-    }
-    .field input, .field select, .field textarea{
-      width:100%;
-      padding: 12px 12px;
-      border-radius: 12px;
-      border: 1px solid rgba(255,255,255,.14);
-      background: rgba(0,0,0,.20);
-      color: var(--text);
-      outline:none;
-      transition: border-color .18s ease, box-shadow .18s ease, background .18s ease;
-      font-size: 14px;
-    }
-    .field textarea{ min-height: 90px; resize: vertical; }
-    .field input:focus, .field select:focus, .field textarea:focus{
-      border-color: rgba(59,130,246,.70);
-      box-shadow: 0 0 0 4px rgba(59,130,246,.18);
-      background: rgba(0,0,0,.26);
-    }
-
-    .row{
-      display:flex;
-      gap:10px;
-      align-items:center;
-      flex-wrap:wrap;
-    }
-
-    .note{
-      font-size: 12px;
-      color: var(--muted2);
-      line-height:1.45;
-    }
-    .status{
-      font-size: 12px;
-      padding: 8px 10px;
-      border-radius: 999px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.06);
-      color: var(--muted);
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      user-select:none;
-    }
-    .dot{
-      width:8px; height:8px; border-radius: 50%;
-      background: rgba(255,255,255,.35);
-      box-shadow: 0 0 0 6px rgba(255,255,255,.06);
-    }
-    .dot.ok{ background: rgba(34,197,94,.9); box-shadow: 0 0 0 6px rgba(34,197,94,.10); }
-    .dot.bad{ background: rgba(239,68,68,.9); box-shadow: 0 0 0 6px rgba(239,68,68,.10); }
-
-    .dashCards{
-      display:grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 14px;
-      margin-top: 14px;
-    }
-    @media (max-width: 1100px){
-      .dashCards{ grid-template-columns: repeat(2, 1fr); }
-    }
-    @media (max-width: 560px){
-      .dashCards{ grid-template-columns: 1fr; }
-    }
-
-    .dashCard{
-      padding: 16px;
-      border-radius: var(--radius);
-      background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.05));
-      border: 1px solid rgba(255,255,255,.14);
-      backdrop-filter: blur(var(--blur));
-      -webkit-backdrop-filter: blur(var(--blur));
-      cursor:pointer;
-      transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease, background .18s ease;
-      position:relative;
-      overflow:hidden;
-      min-height: 132px;
-    }
-    .dashCard:before{
-      content:"";
-      position:absolute; inset:-2px;
-      background: radial-gradient(300px 120px at 30% 20%, rgba(59,130,246,.20), transparent 60%);
-      opacity:.9;
-      pointer-events:none;
-    }
-    .dashCard:hover{
-      transform: translateY(-2px);
-      border-color: rgba(59,130,246,.50);
-      box-shadow: 0 18px 44px rgba(0,0,0,.34);
-      background: linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.06));
-    }
-    .dashCard .icon{
-      width: 36px; height: 36px;
-      border-radius: 14px;
-      border: 1px solid rgba(255,255,255,.16);
-      background: rgba(0,0,0,.22);
-      display:flex; align-items:center; justify-content:center;
-      margin-bottom: 10px;
-      position:relative;
-      z-index:1;
-    }
-    .dashCard h3{
-      margin: 0;
-      font-size: 14px;
-      font-weight: 800;
-      letter-spacing:.02em;
-      position:relative;
-      z-index:1;
-    }
-    .dashCard p{
-      margin: 8px 0 0;
-      color: var(--muted);
-      font-size: 12.5px;
-      line-height: 1.45;
-      position:relative;
-      z-index:1;
-      max-width: 40ch;
-    }
-
-    .view{
-      display:none;
-      animation: fadeUp .45s ease both;
-    }
-    .view.active{ display:block; }
-
-    .crumb{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      margin: 0 0 12px;
-    }
-    .crumb .left{
-      display:flex;
-      flex-direction:column;
-      gap:4px;
-    }
-    .crumb .left .kicker{
-      font-size: 12px;
-      color: var(--muted2);
-      letter-spacing:.06em;
-      text-transform: uppercase;
-      font-weight: 700;
-    }
-    .crumb .left .h{
-      margin:0;
-      font-size: 16px;
-      font-weight: 800;
-      letter-spacing: .02em;
-    }
-
-    .empty{
-      padding: 14px;
-      border-radius: 14px;
-      border: 1px dashed rgba(255,255,255,.18);
-      background: rgba(0,0,0,.18);
-      color: var(--muted);
-      font-size: 13px;
-      line-height:1.5;
-    }
-
-    .footerNote{
-      margin-top: 14px;
-      font-size: 12px;
-      color: var(--muted2);
-      line-height: 1.45;
-    }
-
-    /* Modal */
-    .modalWrap{
-      position:fixed; inset:0;
-      display:none;
-      align-items:center;
-      justify-content:center;
-      padding: 18px;
-      background: rgba(0,0,0,.55);
-      z-index: 99;
-    }
-    .modalWrap.active{ display:flex; }
-    .modal{
-      width: min(560px, 100%);
-      border-radius: 18px;
-      background: rgba(10,16,30,.72);
-      border: 1px solid rgba(255,255,255,.16);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-      box-shadow: 0 24px 70px rgba(0,0,0,.55);
-      padding: 16px;
-      animation: fadeUp .25s ease both;
-    }
-    .modalHeader{
-      display:flex; align-items:flex-start; justify-content:space-between; gap:10px;
-      margin-bottom: 8px;
-    }
-    .modalHeader h3{ margin:0; font-size: 15px; font-weight: 800; letter-spacing:.02em; }
-    .modalHeader p{ margin:6px 0 0; color:var(--muted); font-size: 12.5px; line-height:1.45; }
-    .modalActions{ display:flex; gap:10px; justify-content:flex-end; margin-top: 12px; flex-wrap:wrap; }
-  </style>
+  <link rel="stylesheet" href="/assets/styles.css" />
 </head>
 
 <body>
@@ -446,40 +17,39 @@
   <div class="glow"></div>
 
   <div class="wrap">
-
-    <div class="topbar card section" style="padding:14px 16px;">
+    <header class="topbar card">
       <div class="brand">
         <div class="logoMark" aria-hidden="true"></div>
-        <div>
-          <h1>SmartCore HQ</h1>
-          <div class="sub">Internal Management System</div>
+        <div class="brandText">
+          <div class="brandTitle">SmartCore HQ</div>
+          <div class="brandSub">Internal Management System</div>
         </div>
       </div>
 
-      <div class="row">
+      <div class="topActions">
         <div class="pill" id="sessionPill" style="display:none;">
-          <div class="status" id="sessionStatus">
+          <div class="status">
             <span class="dot ok" id="sessionDot"></span>
-            <span id="sessionText">Authenticated</span>
+            <span class="statusText" id="sessionText">Authenticated</span>
           </div>
-          <button class="btn small linky" id="btnSignOut">Sign out</button>
+          <button class="btn small linky" id="btnSignOut" type="button">Sign out</button>
         </div>
       </div>
-    </div>
+    </header>
 
-    <div class="grid">
-      <!-- LEFT: main content -->
-      <div class="card section">
-        <!-- LOGIN VIEW -->
+    <main class="grid">
+      <!-- Main -->
+      <section class="card section">
+        <!-- LOGIN -->
         <div class="view active" id="viewLogin">
           <div class="titleRow">
             <div>
               <h2>Staff Login</h2>
-              <p>Access is restricted to SmartCore staff. Your account must exist in <span style="color:var(--accent2);font-weight:700;">smartcore_logins</span>.</p>
+              <p>Restricted to SmartCore staff. You must exist in <span class="accent">smartcore_logins</span>.</p>
             </div>
             <div class="status" id="loginStatus" style="display:none;">
               <span class="dot" id="loginDot"></span>
-              <span id="loginStatusText">Status</span>
+              <span class="statusText" id="loginStatusText">Status</span>
             </div>
           </div>
 
@@ -488,214 +58,169 @@
           <div class="fields">
             <div class="field">
               <label for="email">Email</label>
-              <input id="email" type="email" autocomplete="email" placeholder="name@smartcoretechnology.co.uk" />
+              <input id="email" type="email" autocomplete="email" inputmode="email"
+                     placeholder="name@smartcoretechnology.co.uk" />
             </div>
 
             <div class="field">
               <label for="password">Password</label>
-              <input id="password" type="password" autocomplete="current-password" placeholder="••••••••" />
+              <input id="password" type="password" autocomplete="current-password"
+                     placeholder="••••••••" />
             </div>
 
-            <div class="row" style="justify-content:space-between;">
-              <div class="note" id="envHint">Set Supabase URL + Anon Key as Cloudflare Pages env vars.</div>
-              <button class="btn primary" id="btnLogin">Sign in</button>
+            <div class="row between">
+              <div class="note" id="envHint">Loading environment…</div>
+              <button class="btn primary" id="btnLogin" type="button">Sign in</button>
             </div>
 
-            <div class="footerNote" id="loginHelp">
-              If you can sign in to Supabase but you still can’t access SmartCore HQ, you likely haven’t been added to <b>smartcore_logins</b> with the correct role.
+            <div class="footerNote">
+              If you can sign in but still get blocked, you haven’t been added to <b>smartcore_logins</b> (or role is wrong).
             </div>
           </div>
         </div>
 
-        <!-- DASHBOARD VIEW -->
+        <!-- DASHBOARD -->
         <div class="view" id="viewDashboard">
           <div class="titleRow">
             <div>
               <h2>Dashboard</h2>
-              <p>Command centre for SmartCore operations. Choose a module to continue.</p>
+              <p>Operations command centre. Choose a module to continue.</p>
             </div>
-
-            <div class="row">
-              <span class="status" id="roleBadge">
-                <span class="dot ok"></span>
-                <span id="roleText">role</span>
-              </span>
-            </div>
+            <span class="status" id="roleBadge">
+              <span class="dot ok"></span>
+              <span class="statusText" id="roleText">role</span>
+            </span>
           </div>
 
           <div class="dashCards">
-            <div class="dashCard" data-go="calendar">
-              <div class="icon" aria-hidden="true">
-                <!-- calendar icon -->
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                  <path d="M8 3v3M16 3v3" stroke="white" stroke-opacity=".88" stroke-width="2" stroke-linecap="round"/>
-                  <path d="M4.5 9h15" stroke="white" stroke-opacity=".5" stroke-width="2" stroke-linecap="round"/>
-                  <path d="M6 6h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2Z" stroke="white" stroke-opacity=".72" stroke-width="2"/>
-                </svg>
-              </div>
+            <button class="dashCard" data-go="calendar" type="button">
+              <div class="icon" aria-hidden="true" id="iconCalendar"></div>
               <h3>Calendar</h3>
               <p>Week / month views, event management, filters by customer and staff.</p>
-            </div>
+            </button>
 
-            <div class="dashCard" data-go="customers">
-              <div class="icon" aria-hidden="true">
-                <!-- building icon -->
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                  <path d="M4 20V6a2 2 0 0 1 2-2h6v16" stroke="white" stroke-opacity=".72" stroke-width="2" stroke-linejoin="round"/>
-                  <path d="M14 20V10a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v10" stroke="white" stroke-opacity=".72" stroke-width="2" stroke-linejoin="round"/>
-                  <path d="M8 8h2M8 12h2M8 16h2" stroke="white" stroke-opacity=".55" stroke-width="2" stroke-linecap="round"/>
-                </svg>
-              </div>
+            <button class="dashCard" data-go="customers" type="button">
+              <div class="icon" aria-hidden="true" id="iconBuilding"></div>
               <h3>Customer Portal Manager</h3>
               <p>Companies, contacts, services, branding, notes and edits.</p>
-            </div>
+            </button>
 
-            <div class="dashCard" data-go="finance">
-              <div class="icon" aria-hidden="true">
-                <!-- chart icon -->
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                  <path d="M4 19V5" stroke="white" stroke-opacity=".55" stroke-width="2" stroke-linecap="round"/>
-                  <path d="M4 19h16" stroke="white" stroke-opacity=".55" stroke-width="2" stroke-linecap="round"/>
-                  <path d="M7 15l3-3 3 2 5-6" stroke="white" stroke-opacity=".78" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </div>
+            <button class="dashCard" data-go="finance" type="button">
+              <div class="icon" aria-hidden="true" id="iconChart"></div>
               <h3>Payments &amp; Finance</h3>
               <p>Track income, expenses, receipts, and annual reporting views.</p>
-            </div>
+            </button>
 
-            <div class="dashCard" data-go="vault" id="vaultCard">
-              <div class="icon" aria-hidden="true">
-                <!-- lock icon -->
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                  <path d="M7 11V8a5 5 0 0 1 10 0v3" stroke="white" stroke-opacity=".72" stroke-width="2" stroke-linecap="round"/>
-                  <path d="M6 11h12a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2Z" stroke="white" stroke-opacity=".78" stroke-width="2" stroke-linejoin="round"/>
-                </svg>
-              </div>
+            <button class="dashCard" data-go="vault" id="vaultCard" type="button">
+              <div class="icon" aria-hidden="true" id="iconLock"></div>
               <h3>Credentials Vault</h3>
               <p>Admin-only secure store. PIN required (server-side verification).</p>
-            </div>
+            </button>
           </div>
 
-          <div class="footerNote" style="margin-top:16px;">
-            All routes are protected via Supabase session checks. Vault is hidden unless role = <b>admin</b>.
+          <div class="footerNote">
+            All routes are protected via session checks and RLS. Vault only appears for <b>admin</b>.
           </div>
         </div>
 
-        <!-- CALENDAR VIEW (stub shell for now) -->
+        <!-- MODULE SHELLS -->
         <div class="view" id="viewCalendar">
           <div class="crumb">
             <div class="left">
               <div class="kicker">Module</div>
-              <p class="h" style="margin:0;">Calendar</p>
+              <div class="h">Calendar</div>
             </div>
-            <div class="row">
-              <button class="btn small linky" data-back>Back</button>
-            </div>
+            <button class="btn small linky" data-back type="button">Back</button>
           </div>
-          <div class="empty">
-            Calendar UI + CRUD will go into <b>calendar_events</b>.<br/>
-            Next file(s) will add week/month grid, filters, add/edit modal, and optional ICS export / Google sync.
-          </div>
+          <div class="empty">Next: week/month calendar + add/edit events + filters + ICS export.</div>
         </div>
 
-        <!-- CUSTOMERS VIEW (stub shell for now) -->
         <div class="view" id="viewCustomers">
           <div class="crumb">
             <div class="left">
               <div class="kicker">Module</div>
-              <p class="h" style="margin:0;">Customer Portal Manager</p>
+              <div class="h">Customer Portal Manager</div>
             </div>
-            <div class="row">
-              <button class="btn small linky" data-back>Back</button>
-            </div>
+            <button class="btn small linky" data-back type="button">Back</button>
           </div>
-          <div class="empty">
-            Company CRUD will go into <b>companies</b> + services into <b>company_services</b>.<br/>
-            Next file(s) will add company list, add/edit form, logo upload to Storage, and services editor.
-          </div>
+          <div class="empty">Next: company list + add/edit form + logo upload + services editor.</div>
         </div>
 
-        <!-- FINANCE VIEW (stub shell for now) -->
         <div class="view" id="viewFinance">
           <div class="crumb">
             <div class="left">
               <div class="kicker">Module</div>
-              <p class="h" style="margin:0;">Payments &amp; Finance</p>
+              <div class="h">Payments &amp; Finance</div>
             </div>
-            <div class="row">
-              <button class="btn small linky" data-back>Back</button>
-            </div>
+            <button class="btn small linky" data-back type="button">Back</button>
           </div>
-          <div class="empty">
-            Transactions will go into <b>transactions</b> with optional receipt uploads to Storage.<br/>
-            Next file(s) will add charts, year selector, monthly totals (zero-filled), and annual summaries.
-          </div>
+          <div class="empty">Next: transactions CRUD + receipt upload + charts + year selector.</div>
         </div>
 
-        <!-- VAULT VIEW (stub shell for now) -->
         <div class="view" id="viewVault">
           <div class="crumb">
             <div class="left">
               <div class="kicker">Admin Module</div>
-              <p class="h" style="margin:0;">Credentials Vault</p>
+              <div class="h">Credentials Vault</div>
             </div>
-            <div class="row">
-              <button class="btn small linky" data-back>Back</button>
-            </div>
+            <button class="btn small linky" data-back type="button">Back</button>
           </div>
+
           <div class="empty">
-            Vault unlock will be handled by a <b>server-side PIN verification</b> (Edge Function / Cloudflare Function).<br/>
-            Next file(s) will add: PIN modal, 5-attempt lockout, 10-min lock, 20-min session unlock, audit logging.
+            PIN unlock is verified server-side via <b>/vault/verify</b> (Cloudflare Function).<br><br>
+            Next: vault list + reveal-confirm + copy buttons + audit logs.
+          </div>
+
+          <div class="hr"></div>
+
+          <div class="row">
+            <button class="btn primary" id="btnOpenVaultUnlock" type="button">Enter PIN to Unlock</button>
           </div>
         </div>
-      </div>
+      </section>
 
-      <!-- RIGHT: system status / guidance -->
-      <div class="card section">
+      <!-- Status panel -->
+      <aside class="card section">
         <div class="titleRow">
           <div>
             <h2>System Status</h2>
-            <p>Live connection status and access checks.</p>
+            <p>Connection + access checks.</p>
           </div>
         </div>
 
         <div class="hr"></div>
 
         <div class="fields">
-          <div class="status" id="sbStatus">
+          <div class="status">
             <span class="dot" id="sbDot"></span>
-            <span id="sbText">Supabase: not initialised</span>
+            <span class="statusText" id="sbText">Supabase: loading</span>
           </div>
 
-          <div class="status" id="authStatus">
+          <div class="status">
             <span class="dot" id="authDot"></span>
-            <span id="authText">Auth: unknown</span>
+            <span class="statusText" id="authText">Auth: unknown</span>
           </div>
 
-          <div class="status" id="accessStatus">
+          <div class="status">
             <span class="dot" id="accessDot"></span>
-            <span id="accessText">Access: not checked</span>
+            <span class="statusText" id="accessText">Access: not checked</span>
           </div>
 
           <div class="hr"></div>
 
           <div class="note">
-            <b>Cloudflare Pages env vars</b> (recommended):
-            <br/>• <span style="color:var(--accent2);font-weight:700;">SUPABASE_URL</span>
-            <br/>• <span style="color:var(--accent2);font-weight:700;">SUPABASE_ANON_KEY</span>
-            <br/><br/>
-            Then add a small build step later to inject them, or (for now) paste them into the constants in this file.
+            Uses Cloudflare Pages Function <b>/config</b> to load:
+            <br>• SUPABASE_URL
+            <br>• SUPABASE_ANON
           </div>
         </div>
 
-        <div class="footerNote">
-          Security is enforced by Supabase <b>RLS</b> (policies in the SQL below). The frontend only provides the UI.
-        </div>
-      </div>
-    </div>
+        <div class="footerNote">Security is enforced by Supabase RLS. Frontend is UI only.</div>
+      </aside>
+    </main>
   </div>
 
-  <!-- Optional modal shell (used in later files) -->
+  <!-- Modal -->
   <div class="modalWrap" id="modalWrap" aria-hidden="true">
     <div class="modal" role="dialog" aria-modal="true">
       <div class="modalHeader">
@@ -703,244 +228,15 @@
           <h3 id="modalTitle">Modal</h3>
           <p id="modalDesc">Description</p>
         </div>
-        <button class="btn small linky" id="modalClose">Close</button>
+        <button class="btn small linky" id="modalClose" type="button">Close</button>
       </div>
       <div id="modalBody"></div>
       <div class="modalActions" id="modalActions"></div>
     </div>
   </div>
 
-  <!-- Supabase JS (v2) -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <script>
-    /***********************************************************************
-     * CONFIG
-     * For Cloudflare Pages, you’ll typically inject env vars at build time.
-     * For now (as requested: just index.html), paste values below OR inject.
-     ***********************************************************************/
-    const SUPABASE_URL = window.SUPABASE_URL || "https://qcntshsgulbhgcpzrefl.supabase.co";        // <-- paste or inject
-    const SUPABASE_ANON_KEY = window.SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFjbnRzaHNndWxiaGdjcHpyZWZsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE0MTM5OTUsImV4cCI6MjA4Njk4OTk5NX0.nEVG-7vS8IQwZmf-WtEPvvjmSWbm7EKqpn4PHQS_4Yc"; // <-- paste or inject
-
-    /***********************************************************************
-     * UI helpers
-     ***********************************************************************/
-    const $ = (id) => document.getElementById(id);
-    const views = {
-      login: $("viewLogin"),
-      dash: $("viewDashboard"),
-      calendar: $("viewCalendar"),
-      customers: $("viewCustomers"),
-      finance: $("viewFinance"),
-      vault: $("viewVault")
-    };
-
-    function setStatus(elDot, elText, ok, text){
-      elDot.classList.remove("ok","bad");
-      elDot.classList.add(ok ? "ok" : "bad");
-      elText.textContent = text;
-    }
-
-    function showView(name){
-      Object.values(views).forEach(v => v.classList.remove("active"));
-      views[name].classList.add("active");
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-
-    function toastLogin(ok, msg){
-      const box = $("loginStatus");
-      const dot = $("loginDot");
-      const txt = $("loginStatusText");
-      box.style.display = "inline-flex";
-      dot.classList.remove("ok","bad");
-      dot.classList.add(ok ? "ok" : "bad");
-      txt.textContent = msg;
-    }
-
-    function safeText(s){ return (s ?? "").toString(); }
-
-    /***********************************************************************
-     * Supabase init + auth guard
-     ***********************************************************************/
-    let sb = null;
-    let currentProfile = null; // from smartcore_logins
-
-    function initSupabase(){
-      if(!SUPABASE_URL || !SUPABASE_ANON_KEY){
-        setStatus($("sbDot"), $("sbText"), false, "Supabase: missing URL / anon key");
-        $("envHint").textContent = "Supabase URL / anon key not set in index.html yet.";
-        return false;
-      }
-      sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-        auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
-      });
-      setStatus($("sbDot"), $("sbText"), true, "Supabase: connected");
-      $("envHint").textContent = "Supabase env detected.";
-      return true;
-    }
-
-    async function getSession(){
-      if(!sb) return null;
-      const { data, error } = await sb.auth.getSession();
-      if(error) return null;
-      return data.session || null;
-    }
-
-    async function fetchSmartcoreProfileByEmail(email){
-      // smartcore_logins is the gatekeeper table
-      const { data, error } = await sb
-        .from("smartcore_logins")
-        .select("id,email,role,created_at,auth_user_id")
-        .eq("email", email)
-        .maybeSingle();
-
-      if(error) throw error;
-      return data || null;
-    }
-
-    async function enforceAccess(){
-      const session = await getSession();
-      if(!session){
-        currentProfile = null;
-        setStatus($("authDot"), $("authText"), false, "Auth: no session");
-        setStatus($("accessDot"), $("accessText"), false, "Access: not signed in");
-        $("sessionPill").style.display = "none";
-        showView("login");
-        return;
-      }
-
-      setStatus($("authDot"), $("authText"), true, "Auth: session active");
-
-      const email = session.user?.email;
-      if(!email){
-        await sb.auth.signOut();
-        currentProfile = null;
-        setStatus($("accessDot"), $("accessText"), false, "Access: missing email");
-        showView("login");
-        return;
-      }
-
-      const profile = await fetchSmartcoreProfileByEmail(email);
-
-      if(!profile){
-        // Signed into Supabase auth, but NOT allowed into HQ (not in smartcore_logins)
-        await sb.auth.signOut();
-        currentProfile = null;
-        setStatus($("accessDot"), $("accessText"), false, "Access: denied (not in smartcore_logins)");
-        toastLogin(false, "Access denied: you’re not listed in smartcore_logins.");
-        showView("login");
-        return;
-      }
-
-      currentProfile = profile;
-
-      // Show session pill
-      $("sessionPill").style.display = "flex";
-      $("sessionText").textContent = safeText(email);
-      setStatus($("sessionDot"), $("sessionText") ? $("sessionDot") : $("sessionDot"), true, "");
-
-      setStatus($("accessDot"), $("accessText"), true, `Access: granted (${profile.role})`);
-
-      // Role badge + vault visibility
-      $("roleText").textContent = profile.role === "admin" ? "admin access" : "staff access";
-      $("vaultCard").style.display = (profile.role === "admin") ? "block" : "none";
-
-      showView("dash");
-    }
-
-    /***********************************************************************
-     * Actions
-     ***********************************************************************/
-    async function signIn(email, password){
-      toastLogin(true, "Signing in…");
-      const { data, error } = await sb.auth.signInWithPassword({ email, password });
-      if(error){
-        toastLogin(false, error.message);
-        return;
-      }
-      await enforceAccess();
-    }
-
-    async function signOut(){
-      if(!sb) return;
-      await sb.auth.signOut();
-      currentProfile = null;
-      $("sessionPill").style.display = "none";
-      showView("login");
-      setStatus($("authDot"), $("authText"), false, "Auth: signed out");
-      setStatus($("accessDot"), $("accessText"), false, "Access: not signed in");
-    }
-
-    /***********************************************************************
-     * Wire UI
-     ***********************************************************************/
-    function wireUI(){
-      $("btnLogin").addEventListener("click", async () => {
-        const email = $("email").value.trim();
-        const password = $("password").value;
-        if(!email || !password){
-          toastLogin(false, "Enter email and password.");
-          return;
-        }
-        await signIn(email, password);
-      });
-
-      $("password").addEventListener("keydown", (e) => {
-        if(e.key === "Enter") $("btnLogin").click();
-      });
-
-      $("btnSignOut").addEventListener("click", signOut);
-
-      // Dashboard cards navigation
-      document.querySelectorAll(".dashCard").forEach(card => {
-        card.addEventListener("click", () => {
-          const go = card.getAttribute("data-go");
-          if(go === "vault" && currentProfile?.role !== "admin"){
-            return;
-          }
-          if(go === "calendar") showView("calendar");
-          if(go === "customers") showView("customers");
-          if(go === "finance") showView("finance");
-          if(go === "vault") showView("vault");
-        });
-      });
-
-      // Back buttons
-      document.querySelectorAll("[data-back]").forEach(btn => {
-        btn.addEventListener("click", () => showView("dash"));
-      });
-
-      // Modal shell (later)
-      $("modalClose").addEventListener("click", () => $("modalWrap").classList.remove("active"));
-      $("modalWrap").addEventListener("click", (e) => {
-        if(e.target === $("modalWrap")) $("modalWrap").classList.remove("active");
-      });
-      window.addEventListener("keydown", (e) => {
-        if(e.key === "Escape") $("modalWrap").classList.remove("active");
-      });
-    }
-
-    /***********************************************************************
-     * Boot
-     ***********************************************************************/
-    (async function boot(){
-      const ok = initSupabase();
-      wireUI();
-
-      if(!ok){
-        setStatus($("authDot"), $("authText"), false, "Auth: unavailable");
-        setStatus($("accessDot"), $("accessText"), false, "Access: unavailable");
-        return;
-      }
-
-      // Keep UI in sync with auth changes
-      sb.auth.onAuthStateChange(async (_event, _session) => {
-        await enforceAccess();
-      });
-
-      await enforceAccess();
-    })();
-  </script>
+  <script src="/assets/icons.js"></script>
+  <script src="/assets/app.js"></script>
 </body>
 </html>
-
