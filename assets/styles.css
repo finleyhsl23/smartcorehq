@@ -345,3 +345,74 @@ p{ margin: 6px 0 0; color: var(--muted); font-size: 13px; line-height:1.45; }
 .modalHeader h3{ margin:0; font-size: 15px; font-weight: 900; letter-spacing:.02em; }
 .modalHeader p{ margin:6px 0 0; color:var(--muted); font-size: 12.5px; line-height:1.45; }
 .modalActions{ display:flex; gap:10px; justify-content:flex-end; margin-top: 12px; flex-wrap:wrap; }
+
+.inner{ padding: 14px; }
+@media (min-width:980px){ .inner{ padding: 16px; } }
+
+.moduleGrid{
+  display:grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+@media (min-width:980px){
+  .moduleGrid{ grid-template-columns: 1.2fr 1.4fr; }
+  #viewCustomers .moduleGrid{ grid-template-columns: 1.1fr 1.3fr 1.1fr; }
+}
+
+.list{
+  margin-top: 10px;
+  display:grid;
+  gap: 10px;
+}
+
+.item{
+  padding: 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(0,0,0,.18);
+  transition: border-color .18s ease, transform .18s ease, background .18s ease;
+  cursor: pointer;
+}
+.item:hover{
+  transform: translateY(-1px);
+  border-color: rgba(59,130,246,.45);
+  background: rgba(0,0,0,.22);
+}
+.itemTitle{ font-weight: 900; font-size: 13.5px; }
+.itemSub{ margin-top: 6px; font-size: 12px; color: var(--muted); line-height:1.4; }
+
+.calendar{
+  display:grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+}
+.calCell{
+  min-height: 86px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,.10);
+  background: rgba(0,0,0,.16);
+  padding: 10px;
+  position: relative;
+}
+.calDay{
+  font-size: 12px;
+  color: var(--muted2);
+  font-weight: 800;
+}
+.calDot{
+  width: 6px; height: 6px; border-radius: 999px;
+  background: rgba(59,130,246,.85);
+  box-shadow: 0 0 0 6px rgba(59,130,246,.14);
+  display:inline-block;
+  margin-right: 6px;
+}
+.calEvt{
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--text);
+  line-height:1.3;
+  display:flex;
+  align-items:center;
+  gap: 6px;
+  opacity:.92;
+}
