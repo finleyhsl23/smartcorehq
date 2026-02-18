@@ -2,6 +2,16 @@
 
 const $ = (id) => document.getElementById(id);
 
+function withTimeout(promise, ms, label="Request"){
+  return Promise.race([
+    promise,
+    new Promise((_, rej) =>
+      setTimeout(() => rej(new Error(`${label} timed out after ${ms/1000}s`)), ms)
+    )
+  ]);
+}
+
+
 const views = {
   login: $("viewLogin"),
   dash: $("viewDashboard"),
