@@ -85,18 +85,21 @@ async function getSession(){
 async function fetchSmartcoreProfileByEmail(email){
   const { data, error } = await sb
     .from("smartcore_logins")
-    .select("id,email,role,created_at,auth_user_id")
-    .eq("email", email)
+    .select("id,email,role,created_at")
+    .ilike("email", email) // case-insensitive
     .maybeSingle();
 
-  if(error) throw error;
+  if(error){
+    console.error("Supabase error on smartcore_logins:", error);
+    throw new Error(error.message || "smartcore_logins query failed");
+  }
   return data || null;
 }
 
-async function enforceAccess(){
-  try{
-    const session = await getSession();
 
+async function enforceAccess(passedSession=null){
+  try{
+    const session = passedSession ?? await withTimeout(getSession(), 10000, "Get session");
     if(!session){
       currentProfile = null;
       $("sessionPill").style.display = "none";
@@ -117,7 +120,19 @@ async function enforceAccess(){
       return;
     }
 
-    const profile = await fetchSmartcoreProfileByEmail(email);
+    // ✅ Force a hard timeout + log the exact response if it fails
+    let profile = null;
+    try{
+      profile = await withTimeout(fetchSmartcoreProfileByEmail(email), 10000, "Access check (smartcore_logins)");
+    }catch(err){
+      console.error("smartcore_logins fetch error:", err);
+      toastLogin(false, "Access check failed (smartcore_logins). Check console.");
+      setStatus("accessDot","accessText", false, "Access: error (see console)");
+      // sign out so it doesn't stick half-signed-in
+      try{ await sb.auth.signOut(); }catch{}
+      showView("login");
+      return;
+    }
 
     if(!profile){
       await sb.auth.signOut();
@@ -144,33 +159,30 @@ async function enforceAccess(){
     console.error("Access enforcement error:", e);
     toastLogin(false, `Access check failed: ${e.message}`);
     setStatus("accessDot","accessText", false, "Access: error (see console)");
-    // Don’t hang:
-    try { await sb.auth.signOut(); } catch {}
+    try{ await sb.auth.signOut(); }catch{}
     showView("login");
   }
 }
 
+
 async function signIn(email, password){
   const btn = document.getElementById("btnLogin");
-  const withTimeout = (p, ms) =>
-    Promise.race([
-      p,
-      new Promise((_, rej) => setTimeout(() => rej(new Error("Sign-in timed out. Check VPN/adblock or network.")), ms))
-    ]);
-
   try{
     toastLogin(true, "Signing in…");
     btn.disabled = true;
 
     const { data, error } = await withTimeout(
       sb.auth.signInWithPassword({ email, password }),
-      12000
+      12000,
+      "Supabase sign-in"
     );
-
     if(error) throw error;
 
-    console.log("Signed in:", data?.user?.email);
-    await enforceAccess();
+    // ✅ Use returned session immediately
+    const session = data?.session;
+    if(!session) throw new Error("Signed in but no session returned");
+
+    await enforceAccess(session);
   }catch(e){
     console.error("Sign-in failed:", e);
     toastLogin(false, e.message || "Sign-in failed");
